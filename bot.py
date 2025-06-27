@@ -31,7 +31,7 @@ def save_tracked():
             json.dump(tracked, f)
         logger.info("Tracked data saved.")
     except Exception as e:
-        logger.error(f"Error saving tracked data: {e}")
+        logger.error(f"Couldn't save on tracked.json. Maybe check your file permissions. {e}")
 
 def load_tracked():
     global tracked
@@ -42,7 +42,7 @@ def load_tracked():
     except FileNotFoundError:
         logger.info("No tracked.json found, starting fresh.")
     except Exception as e:
-        logger.error(f"Error loading tracked data: {e}")
+        logger.error(f"Couldn't load tracked.json. Maybe check your file permissions. {e}")
 
 class CainiaoTracker:
     @staticmethod
@@ -78,12 +78,17 @@ async def checkperms(ctx):
     except:
         logger.error("Couldn't send permission check")
 
+
 @bot.command()
 async def track(ctx, tracking_number: str):
     """Track a new package"""
     try:
         if not ctx.channel.permissions_for(ctx.guild.me).send_messages:
             await ctx.author.send("❌ I can't send messages in that channel!")
+            return
+        
+        if tracking_number in tracked:
+            await ctx.send(f"⚠️ This package is already being tracked in <#{tracked[tracking_number]['channel_id']}>!")
             return
 
         data = await CainiaoTracker.get_package_info(tracking_number)
@@ -125,7 +130,7 @@ async def track(ctx, tracking_number: str):
         await ctx.send(f"✅ Now tracking package. Updates every 10 minutes.")
     except Exception as e:
         logger.error(f"Track command error: {e}")
-        await ctx.send("⚠️ An error occurred. Use !checkperms to verify my permissions.")
+        await ctx.send("⚠️ An error occurred. Use !checkperms to verify the permissions.")
 
 @bot.command()
 async def remove(ctx, tracking_number: str):
@@ -140,6 +145,21 @@ async def remove(ctx, tracking_number: str):
         await ctx.send(f"✅ Stopped tracking {tracking_number}.")
     else:
         await ctx.send(f"⚠️ That tracking number was not being tracked.")
+
+@bot.command(name="list")
+async def list_packages(ctx):
+    """List all tracked packages"""
+    if not tracked:
+        await ctx.send("No packages being tracked currently.")
+        return
+    
+    message = ["**Currently Tracked Packages:**"]
+    for idx, (num, info) in enumerate(tracked.items(), 1):
+        channel = bot.get_channel(info['channel_id'])
+        channel_name = f"<#{info['channel_id']}>" if channel else "Unknown Channel"
+        message.append(f"{idx}. `{num}` in {channel_name} (Last update: {info['last_status'].split(':')[0]})")
+    
+    await ctx.send("\n".join(message))
 
 @tasks.loop(minutes=10)
 async def check_updates():
@@ -200,4 +220,3 @@ async def on_ready():
             logger.warning("Couldn't send welcome message to default channel.")
 
 bot.run(DISCORD_TOKEN)
-
