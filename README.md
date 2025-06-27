@@ -3,7 +3,7 @@
 ![GitHub](https://img.shields.io/badge/Python-3.8%2B-blue)
 ![GitHub](https://img.shields.io/badge/license-MIT-green)
 
-A Discord bot that automatically tracks Aliexpress packages via Cainiao and other carriers, posting updates to your channel without manual checking.
+A Discord bot that automatically tracks Aliexpress packages via Cainiao, posting updates to your Discord channel automatically.
 
 ## Features ✨
 
