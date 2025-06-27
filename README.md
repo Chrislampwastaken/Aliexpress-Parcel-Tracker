@@ -72,6 +72,8 @@ Command	Description	Example
 - Docker container support
 - Expanded carrier support (USPS, DHL, etc.)
 - Headless mode
+- Cut each part into different modules
+- Implement SQL
 
 # Comments
 This is my first ever project that I ever finished. I am quite proud of how well it works compared to my skills.
