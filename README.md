@@ -66,6 +66,7 @@ Command	Description	Example
 !track <ID>  Start tracking a package	ie !track LP123456789CN
 !remove <ID>	Stop tracking a package	ie !remove LP123456789CN
 !checkperms	Verify bot permissions	ie !checkperms
+!list Lists all currently tracking numbers
 ```
 
 # To do
