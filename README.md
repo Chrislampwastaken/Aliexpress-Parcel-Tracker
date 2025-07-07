@@ -52,7 +52,7 @@ Might need to use python3 instead of python
 # Running in the background
 ```bash
 # Using screen (Linux/Mac)
-screen -S tracker
+screen -R tracker
 python bot.py
 # Press Ctrl+A then D to detach
 
